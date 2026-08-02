@@ -1,0 +1,32 @@
+{
+  "name": "@tensura/bot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/dev.ts",
+    "start": "node dist/shard-manager.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "registry:sync": "tsx src/registry/sync.ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "discord.js": "^14.15.3",
+    "@tensura/config": "workspace:*",
+    "@tensura/logger": "workspace:*",
+    "@tensura/database": "workspace:*",
+    "@tensura/cache": "workspace:*",
+    "@tensura/core": "workspace:*",
+    "@tensura/ui-kit": "workspace:*",
+    "@tensura/types": "workspace:*",
+    "@tensura/render": "workspace:*",
+    "ioredis": "^5.4.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "tsx": "^4.16.5",
+    "@types/node": "^20.14.15"
+  }
+}

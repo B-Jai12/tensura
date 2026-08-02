@@ -1,0 +1,2 @@
+# Font files are populated by the setup script — not committed to git.
+# Run: pnpm --filter @tensura/render fonts:download

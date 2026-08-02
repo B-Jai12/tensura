@@ -1,0 +1,12 @@
+node_modules/
+dist/
+build/
+.turbo/
+.env
+.env.local
+*.log
+coverage/
+.DS_Store
+packages/database/prisma/dev.db
+apps/*/dist
+apps/*/.next

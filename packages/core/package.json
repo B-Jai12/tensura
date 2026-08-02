@@ -1,0 +1,25 @@
+{
+  "name": "@tensura/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@tensura/database": "workspace:*",
+    "@tensura/cache": "workspace:*",
+    "@tensura/types": "workspace:*",
+    "@tensura/logger": "workspace:*",
+    "discord.js": "^14.15.3",
+    "ioredis": "^5.4.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}

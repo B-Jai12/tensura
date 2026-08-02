@@ -1,0 +1,140 @@
+// Tensura — Prisma schema
+//
+// Phase 1 contains only the identity/config baseline every other module
+// depends on. Each later phase (XP, moderation, tickets, economy, ...)
+// appends its own model group here per the module map in
+// TENSURA_ARCHITECTURE.md — models are namespaced by comment headers,
+// never mixed together, so a module's slice can be reviewed in isolation.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Guild & Identity ─────────────────────────────────────────────
+
+model Guild {
+  id        String   @id // Discord guild snowflake
+  name      String
+  ownerId   String
+  config    GuildConfig?
+  members   GuildMember[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("guilds")
+}
+
+/// Per-guild feature toggles and routing config. `modules` and
+/// `logChannels` are validated at the application layer (Zod, in
+/// packages/config) — kept as Json here so new modules never require
+/// a migration just to add a toggle.
+model GuildConfig {
+  guildId          String   @id
+  guild            Guild    @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  theme            String   @default("cozy_cafe")
+  locale           String   @default("en")
+  modules          Json     @default("{}")
+  logChannels      Json     @default("{}")
+  welcomeChannelId String?
+  levelUpChannelId String?
+  stackLevelRoles  Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("guild_configs")
+}
+
+/// Global Discord user identity, independent of any guild.
+model User {
+  id        String        @id // Discord user snowflake
+  username  String
+  members   GuildMember[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("users")
+}
+
+/// A user's membership record within one guild. This is the join point
+/// every guild-scoped module (XP, economy, moderation...) will key off
+/// via (guildId, userId) composite ids, kept consistent with this table.
+model GuildMember {
+  guildId  String
+  userId   String
+  guild    Guild    @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nickname String?
+  joinedAt DateTime @default(now())
+  leftAt   DateTime?
+
+  @@id([guildId, userId])
+  @@index([guildId])
+  @@map("guild_members")
+}
+
+// ── XP & Leveling ─────────────────────────────────────────────────
+
+/// Per-member XP accumulation record. One row per (guild, user) pair.
+/// The leaderboard query orders by `xp DESC` using the covering index.
+model XpProfile {
+  guildId       String
+  userId        String
+  /// XP accumulated within the current level (resets each level-up).
+  xp            Int      @default(0)
+  /// Absolute level the member is currently on (0-indexed internally, shown as Level 1+).
+  level         Int      @default(0)
+  /// Total life-time XP across all levels — used for leaderboard ordering.
+  totalXp       Int      @default(0)
+  totalMessages Int      @default(0)
+  /// Timestamp of the last XP grant — used to enforce the 60s cooldown.
+  lastXpAt      DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@id([guildId, userId])
+  @@index([guildId, totalXp(sort: Desc)]) // leaderboard query
+  @@map("xp_profiles")
+}
+
+/// Maps a guild level milestone to the Discord role that should be
+/// awarded when a member reaches it. One entry per (guild, level) pair
+/// — a level can only grant one role, but many levels can be configured.
+model LevelRoleReward {
+  id      String @id @default(cuid())
+  guildId String
+  level   Int
+  roleId  String
+
+  @@unique([guildId, level])
+  @@index([guildId])
+  @@map("level_role_rewards")
+}
+
+// ── Moderation ────────────────────────────────────────────────────────────────
+
+/// A permanent audit log entry for every moderation action taken.
+/// Supports: warn, mute, kick, ban, unban, unmute.
+/// Case IDs are CUIDs for URL-safety and global uniqueness.
+model ModerationCase {
+  id          String    @id @default(cuid())
+  guildId     String
+  /// The Discord user who was actioned (not necessarily in the server).
+  userId      String
+  moderatorId String
+  /// "warn" | "mute" | "kick" | "ban" | "unban" | "unmute"
+  action      String
+  reason      String?
+  /// For timed punishments (mutes, temp-bans). Null = permanent.
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([guildId, userId])
+  @@index([guildId, action])
+  @@map("moderation_cases")
+}

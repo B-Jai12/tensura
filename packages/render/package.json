@@ -1,0 +1,32 @@
+{
+  "name": "@tensura/render",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "clean": "rm -rf dist",
+    "fonts:download": "tsx scripts/download-fonts.ts"
+  },
+  "dependencies": {
+    "@tensura/design-system": "workspace:*",
+    "@napi-rs/canvas": "^0.1.53",
+    "@fontsource/inter": "^5.0.8",
+    "@fontsource/outfit": "^5.0.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "tsx": "^4.16.5",
+    "@types/node": "^20.14.15"
+  }
+}

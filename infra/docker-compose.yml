@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: tensura-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: tensura
+      POSTGRES_PASSWORD: tensura
+      POSTGRES_DB: tensura
+    ports:
+      - "5432:5432"
+    volumes:
+      - tensura_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tensura"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: tensura-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - tensura_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Optional: run the bot itself in Docker too. Most local dev will run
+  # `pnpm dev:bot` on the host against these two services instead (faster
+  # iteration), but this proves the same Dockerfile used on Railway works.
+  bot:
+    build:
+      context: .
+      dockerfile: apps/bot/Dockerfile
+    container_name: tensura-bot
+    restart: unless-stopped
+    profiles: ["full"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://tensura:tensura@postgres:5432/tensura
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  tensura_postgres_data:
+  tensura_redis_data:

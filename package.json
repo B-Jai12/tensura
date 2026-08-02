@@ -1,0 +1,37 @@
+{
+  "name": "tensura",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Tensura — a modular Discord community platform (Cozy Anime Café)",
+  "packageManager": "pnpm@9.1.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "start": "pnpm --filter @tensura/bot start",
+    "dev": "turbo run dev --parallel",
+    "dev:bot": "turbo run dev --filter=@tensura/bot",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "db:generate": "pnpm --filter @tensura/database run generate",
+    "db:migrate": "pnpm --filter @tensura/database run migrate:dev",
+    "db:deploy": "pnpm --filter @tensura/database run migrate:deploy",
+    "db:push": "pnpm --filter @tensura/database run db:push",
+    "db:studio": "pnpm --filter @tensura/database run studio",
+    "db:seed": "pnpm --filter @tensura/database run seed",
+    "registry:sync": "pnpm --filter @tensura/bot run registry:sync",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\""
+  },
+  "devDependencies": {
+    "turbo": "^2.0.6",
+    "typescript": "^5.5.4",
+    "prettier": "^3.3.3",
+    "eslint": "^9.8.0",
+    "@eslint/js": "^9.8.0",
+    "typescript-eslint": "^8.0.1",
+    "@types/node": "^20.14.15"
+  }
+}
