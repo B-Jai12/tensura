@@ -16,9 +16,18 @@ export async function loadEvents(ctx: BotContext): Promise<() => void> {
     (f) => (f.endsWith(".event.js") || f.endsWith(".event.ts")) && f !== "event.types.ts",
   );
 
+  // Group files by base name to avoid importing both .event.js and .event.ts for the same event
+  const eventFilesMap = new Map<string, string>();
+  for (const file of files) {
+    const baseName = file.replace(/\.event\.(js|ts)$/, "");
+    if (!eventFilesMap.has(baseName) || file.endsWith(".ts")) {
+      eventFilesMap.set(baseName, file);
+    }
+  }
+
   const bound: BoundEvent[] = [];
 
-  for (const file of files) {
+  for (const file of eventFilesMap.values()) {
     const filePath = path.join(__dirname, file);
     const imported = (await import(pathToFileURL(filePath).href)) as { default?: EventDefinition };
 
@@ -41,7 +50,10 @@ export async function loadEvents(ctx: BotContext): Promise<() => void> {
     }
 
     bound.push({ name: event.name, handler });
-    ctx.logger.debug({ event: event.name }, "Bound event");
+    ctx.logger.debug(
+      { event: event.name, listenerCount: ctx.client.listenerCount(event.name) },
+      "Bound event",
+    );
   }
 
   return () => {

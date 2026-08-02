@@ -105,7 +105,7 @@ const event: EventDefinition<"messageCreate"> = {
     }
 
     // 16. Level-up result
-    console.log(`[XP Trace] 16. Level-up result: leveledUp=${result.leveledUp}`);
+    console.log(`[XP Trace] [Msg ${message.id}] 16. Level-up result: leveledUp=${result.leveledUp}`);
     if (!result.leveledUp) {
       console.log("[XP Trace] Exit: Did not level up");
       return;
@@ -145,9 +145,11 @@ const event: EventDefinition<"messageCreate"> = {
 
     // Send the announcement (non-fatal if channel is unpostable)
     if ("send" in announceChannel) {
+      console.log(`[XP Trace] [Msg ${message.id}] Sending single level-up embed to channel ${announceChannel.id} for level ${newLevel}...`);
       await announceChannel.send({ embeds: [embed] }).catch((err) => {
         logger.warn({ err, guildId, userId }, "Failed to send level-up message");
       });
+      console.log(`[XP Trace] [Msg ${message.id}] Level-up embed sent successfully.`);
     }
 
     // Assign all earned role rewards idempotently

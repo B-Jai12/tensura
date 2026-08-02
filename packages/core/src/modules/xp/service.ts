@@ -80,11 +80,13 @@ export async function grantXp(
   userId: string,
 ): Promise<XpGrantResult> {
   const cooldownKey = xpCooldownKey(guildId, userId);
+  const cooldownSec = getXpCooldownSeconds();
 
-  // Cooldown check — single Redis GET
-  const cooldownHit = await redis.exists(cooldownKey);
-  if (cooldownHit) {
-    // Still cooling down — fetch cached profile for completeness
+  // Atomic set-if-not-exists (NX) — acts as an immediate lock & cooldown timer.
+  // Prevents duplicate or concurrent XP grants even if requests arrive in the exact same millisecond.
+  const lockAcquired = await redis.set(cooldownKey, '1', 'EX', cooldownSec, 'NX');
+  if (!lockAcquired) {
+    // Already cooling down or acquired by a concurrent execution — fetch cached profile for return
     const profile = await getXpProfile(redis, guildId, userId);
     return {
       xpGranted: 0,
@@ -130,10 +132,6 @@ export async function grantXp(
       updatedRow: profile,
     });
   }
-
-  // Set cooldown
-  const cooldownSec = getXpCooldownSeconds();
-  redis.set(cooldownKey, '1', 'EX', cooldownSec).catch(() => undefined);
 
   // Invalidate profile cache (await to ensure consistency)
   await Promise.all([
