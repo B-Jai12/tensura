@@ -1,83 +1,130 @@
-# Tensura
+# Tensura — Discord Community Bot
 
-A modular Discord community platform — Cozy Anime Café aesthetic, built for large servers.
+> A modular Discord community platform with a cozy anime-cafe aesthetic, built for large servers.
 
-See `TENSURA_ARCHITECTURE.md` for the full system design. This repo currently implements
-**Phase 1: Foundation** — monorepo scaffold, config/logging/cache/queue plumbing, the
-command/event pipeline, and one working command (`/ping`) proving the whole path end to end.
+---
 
-## Stack
+## What It Does
 
-pnpm + Turborepo · TypeScript (strict) · discord.js v14 · PostgreSQL + Prisma · Redis + BullMQ
-Docker Compose (local) · Railway (production, Dockerfile-based, cloud-agnostic)
+Tensura is a production-grade Discord bot platform built to handle large communities with:
+- **Leveling system** — XP gain on messages with cooldown enforcement via Redis atomic locks
+- **Rank cards** — Canvas-rendered user rank cards with anime-themed branding
+- **Guild configuration** — Per-server settings stored in PostgreSQL
+- **Command pipeline** — Middleware-based command execution with module gating
+- **Background workers** — BullMQ job queues for async tasks (Redis-backed)
 
-## Local setup
+---
 
-**Prereqs:** Node 20+, pnpm 9+, Docker (for Postgres/Redis).
+## Architecture
 
-```bash
-# 1. Install dependencies
+`
+Monorepo (pnpm + Turborepo)
+├── apps/
+│   ├── bot/          # discord.js v14 client, commands, events, sharding
+│   ├── api/          # REST API (planned Phase 2)
+│   └── workers/      # BullMQ background workers (planned Phase 2)
+└── packages/
+    ├── database/     # Prisma ORM + PostgreSQL schema
+    ├── cache/        # Redis client (ioredis)
+    ├── config/       # Zod-validated environment config
+    ├── logger/       # Pino structured logging
+    ├── render/       # Canvas-based image rendering
+    ├── design-system/# Brand tokens, color palettes
+    └── types/        # Shared TypeScript types
+`
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Runtime | Node.js 20+, TypeScript (strict) |
+| Discord | discord.js v14, slash commands |
+| Database | PostgreSQL + Prisma ORM |
+| Cache/Queue | Redis (ioredis) + BullMQ |
+| Build | pnpm + Turborepo |
+| Deployment | Railway (Dockerfile-based) |
+| Rendering | canvas (rank cards) |
+
+---
+
+## Local Setup
+
+**Prerequisites:** Node.js 20+, pnpm 9+, Docker (for Postgres + Redis locally)
+
+`ash
+# 1. Clone
+git clone https://github.com/B-Jai12/tensura.git
+cd tensura
+
+# 2. Install dependencies
 pnpm install
 
-# 2. Start Postgres + Redis
+# 3. Start Postgres + Redis (Docker)
 docker compose -f infra/docker-compose.yml up -d postgres redis
 
-# 3. Configure environment
+# 4. Configure environment
 cp .env.example .env
-# Fill in DISCORD_TOKEN and DISCORD_CLIENT_ID at minimum
-# (Discord Developer Portal -> your application -> Bot / General Information)
+# Edit .env and fill in DISCORD_TOKEN and DISCORD_CLIENT_ID
 
-# 4. Run migrations
+# 5. Run database migrations
 pnpm db:migrate
 
-# 5. Register slash commands to your dev guild
-#    Set DISCORD_DEV_GUILD_IDS in .env first for instant registration
-pnpm registry:sync
+# 6. Register slash commands (dev guild)
+pnpm -F @tensura/bot registry:sync
 
-# 6. Start the bot
-pnpm dev:bot
-```
+# 7. Start the bot in development mode
+pnpm -F @tensura/bot dev
+`
 
-Run `/ping` in your dev server once the bot logs "Tensura is online".
+---
 
-## Monorepo layout
+## Environment Variables
 
-```
-apps/bot        Discord gateway process (this is what runs in Phase 1)
-apps/api        (Phase 11+) Fastify + tRPC service for the dashboard
-apps/workers    (Phase 2+) BullMQ workers — starts with card rendering
-packages/core            Domain services, one folder per module (packages/core/src/modules/*)
-packages/database        Prisma schema + client
-packages/config          Env validation
-packages/logger          Structured logging
-packages/cache           Redis client + cache-aside helpers
-packages/queue           BullMQ connection/queue registry
-packages/types           Shared DTOs, domain event contracts
-packages/ui-kit          Embed builders + Cozy Café color tokens
-```
+Copy .env.example to .env and fill in:
 
-## Full-stack commands
+| Variable | Description |
+|----------|------------|
+| DISCORD_TOKEN | Bot token from Discord Developer Portal |
+| DISCORD_CLIENT_ID | Application ID from Discord Developer Portal |
+| DISCORD_DEV_GUILD_IDS | Comma-separated guild IDs for dev command registration |
+| DATABASE_URL | PostgreSQL connection string |
+| REDIS_URL | Redis connection string |
 
-```bash
-pnpm dev            # run every app in parallel
-pnpm build           # build everything via Turborepo
-pnpm lint            # lint everything
-pnpm typecheck        # typecheck everything
-pnpm test              # run all tests
-pnpm db:studio         # Prisma Studio GUI (run inside packages/database)
-```
+**Never commit .env — it is already in .gitignore.**
 
-## Production (Railway)
+---
 
-Each app (`apps/bot`, later `apps/api`, `apps/workers`) is its own Railway service, built from
-its `Dockerfile` with the **repo root as build context** (`railway.json` in each app folder
-points `dockerfilePath` back to itself). Add Postgres and Redis as Railway plugins — they inject
-`DATABASE_URL` / `REDIS_URL` automatically, matching what `packages/config` expects.
+## Deployment (Railway)
 
-The same Dockerfiles work unmodified on any Docker host (VPS, Render, Fly.io, k8s) — nothing
-Railway-specific is baked into the images themselves, only the `railway.json` build pointers.
+1. Push to GitHub
+2. Create a Railway project
+3. Add PostgreSQL and Redis plugins
+4. Set DISCORD_TOKEN, DISCORD_CLIENT_ID as environment variables
+5. Railway auto-detects the Dockerfile and deploys
 
-## What's next
+---
 
-Phase 2 (design system core — `packages/render` + the reference rank-card template) is the next
-increment per the roadmap in `TENSURA_ARCHITECTURE.md` §12.
+## Current Status
+
+**Phase 1 Complete:**
+- Full monorepo scaffold
+- Config, logging, cache, queue plumbing
+- Command/event pipeline with middleware
+- Guild initialization and configuration
+- XP leveling with Redis atomic cooldowns
+- Rank card rendering
+- /ping, /help, /config, /rank commands
+
+**Phase 2 Planned:**
+- REST API for web dashboard
+- Moderation commands
+- Music queue integration
+- Economy system
+
+---
+
+## Author
+
+Built by [B-Jai12](https://github.com/B-Jai12)
