@@ -8,7 +8,7 @@ const event: EventDefinition<"ready"> = {
   once: true,
   async execute(ctx, client) {
     const logger = moduleLogger(ctx.logger, "system");
-    logger.info({ tag: client.user?.tag, guilds: client.guilds.cache.size }, "Tensura is online");
+    logger.info({ tag: client.user?.tag, guilds: client.guilds.cache.size }, "Rasmaliiii is online");
 
     // ── Slash command sync ────────────────────────────────────────────────────
     // Registers/updates commands with Discord on every startup so the

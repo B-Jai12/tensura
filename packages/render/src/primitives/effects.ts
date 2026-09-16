@@ -423,7 +423,7 @@ export function drawWatermark(
   ctx: CanvasRenderingContext2D,
   width: number,
   height: number,
-  text = '🌸 Tensura',
+  text = '🌸 Rasmaliiii',
 ): void {
   ctx.save();
   ctx.font          = `400 11px Inter, system-ui`;

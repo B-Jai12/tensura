@@ -52,7 +52,7 @@ const command: CommandDefinition = {
 
   data: new SlashCommandBuilder()
     .setName("help")
-    .setDescription("Browse all Tensura commands by module."),
+    .setDescription("Browse all Rasmaliiii commands by module."),
 
   async execute(interaction, ctx) {
     // Collect which modules have at least one loaded command
@@ -81,9 +81,9 @@ const command: CommandDefinition = {
     const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
 
     const embed = baseEmbed({
-      title: `${EMOJI.sakura} Tensura Command Reference`,
+      title: `${EMOJI.sakura} Rasmaliiii Command Reference`,
       description:
-        `Welcome to the Tensura help menu! ${EMOJI.cup}\n\n` +
+        `Welcome to the Rasmaliiii help menu! ${EMOJI.cup}\n\n` +
         `Select a module below to browse its commands.\n\n` +
         `**${ctx.commands.size}** commands loaded across **${moduleGroups.size}** modules.`,
     }).setColor(PALETTE.blossomPink);

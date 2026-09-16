@@ -5,8 +5,8 @@
 import { EMOJI } from './emojis.js';
 
 export const BRAND = {
-  name:          "Tensura",
+  name:          "Rasmaliiii",
   tagline:       "Your Cozy Community Café",
-  watermarkText: "🌸 Tensura",
-  footerText:    `${EMOJI.sakura} Tensura`,
+  watermarkText: "🌸 Rasmaliiii",
+  footerText:    `${EMOJI.sakura} Rasmaliiii`,
 } as const;

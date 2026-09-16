@@ -5,7 +5,7 @@ import type { CommandDefinition } from "../../registry/command.types.js";
 const command: CommandDefinition = {
   module: "core",
   cooldownSeconds: 3,
-  data: new SlashCommandBuilder().setName("ping").setDescription("Check that Tensura is awake and warm."),
+  data: new SlashCommandBuilder().setName("ping").setDescription("Check that Rasmaliiii is awake and warm."),
   async execute(interaction) {
     const sent = await interaction.reply({
       embeds: [baseEmbed({ description: `${EMOJI.sparkle} Warming up the kettle...` })],

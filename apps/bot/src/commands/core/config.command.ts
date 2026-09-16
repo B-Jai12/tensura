@@ -1,7 +1,7 @@
 /**
  * /config — Server configuration panel.
  *
- * Allows server administrators to view and toggle Tensura's modules,
+ * Allows server administrators to view and toggle Rasmaliiii's modules,
  * and configure key settings (XP double-up channels, log channels, etc.).
  *
  * Subcommands:
@@ -41,7 +41,7 @@ const command: CommandDefinition = {
 
   data: new SlashCommandBuilder()
     .setName("config")
-    .setDescription("Configure Tensura for this server. (Admin only)")
+    .setDescription("Configure Rasmaliiii for this server. (Admin only)")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .addSubcommand((sub) =>
       sub.setName("show").setDescription("View current module toggles and settings."),
@@ -49,7 +49,7 @@ const command: CommandDefinition = {
     .addSubcommand((sub) =>
       sub
         .setName("module")
-        .setDescription("Enable or disable a Tensura module.")
+        .setDescription("Enable or disable a Rasmaliiii module.")
         .addStringOption((opt) =>
           opt
             .setName("name")
@@ -114,7 +114,7 @@ const command: CommandDefinition = {
 
       const embed = new EmbedBuilder()
         .setColor(PALETTE.blossomPink)
-        .setTitle(`${EMOJI.sparkle} Tensura Config — ${interaction.guild?.name}`)
+        .setTitle(`${EMOJI.sparkle} Rasmaliiii Config — ${interaction.guild?.name}`)
         .setDescription("**Module Toggles**\n" + lines.join("  "))
         .addFields(
           {

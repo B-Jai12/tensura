@@ -32,7 +32,38 @@ export async function runMiddleware(
 
   // "core" commands (e.g. /ping) always run regardless of module config.
   if (command.module !== "core") {
-    const config = await configModule.getGuildConfig(ctx.redis, interaction.guildId);
+    let config;
+    try {
+      config = await configModule.getGuildConfig(ctx.redis, interaction.guildId);
+    } catch (err) {
+      ctx.logger.error({ err }, "Database/Redis unreachable in middleware");
+      await interaction.reply({
+        embeds: [
+          baseEmbed({
+            tone: "danger",
+            description: "⚠️ The bot's database is unreachable right now. Please make sure PostgreSQL and Redis are running, then restart the bot.",
+          }),
+        ],
+        ephemeral: true,
+      });
+      return { allowed: false, reason: "db-error" };
+    }
+
+    if (!config) {
+      // Guild not seeded yet — auto-initialize and continue
+      try {
+        const guild = interaction.guild;
+        if (guild) {
+          config = await configModule.ensureGuildInitialized({
+            guildId:   guild.id,
+            guildName: guild.name,
+            ownerId:   guild.ownerId,
+          });
+        }
+      } catch (_) {
+        // ignore — fall through to the null check below
+      }
+    }
 
     if (!config) {
       await interaction.reply({
