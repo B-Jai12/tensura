@@ -162,5 +162,5 @@ pnpm build
 
 ##  Author
 
-**Jaideep Botla** ([B-Jai12](https://github.com/B-Jai12))  
+**Jaideep** ([B-Jai12](https://github.com/B-Jai12))  
 B.Tech AIML Student & Systems Builder • Architecting scalable distributed systems and interactive developer experiences.
