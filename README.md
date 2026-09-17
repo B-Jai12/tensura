@@ -1,15 +1,15 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,25,30&height=220&section=header&text=Tensura&fontSize=80&fontAlignY=38&desc=Modular%20Discord%20Community%20Platform%20%7C%20Cozy%20Anime%20Caf%C3%A9%20Aesthetic&descAlignY=60&animation=fadeIn&fontColor=ffffff" width="100%"/>
+
 
 <br/>
 
-[![Discord.js](https://img.shields.io/badge/Discord.js-v14.15-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.js.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://typescriptlang.org)
-[![Turborepo](https://img.shields.io/badge/Turborepo-Monorepo-EF4444?style=for-the-badge&logo=turborepo&logoColor=white)](https://turbo.build/repo)
-[![pnpm](https://img.shields.io/badge/pnpm-v9.1-F69220?style=for-the-badge&logo=pnpm&logoColor=white)](https://pnpm.io)
-[![Prisma](https://img.shields.io/badge/Prisma-PostgreSQL-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://prisma.io)
-[![Redis](https://img.shields.io/badge/Redis-ioredis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io)
+[[Discord.js](https://img.shields.io/badge/Discord.js-v14.15-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.js.org)
+[[TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://typescriptlang.org)
+[[Turborepo](https://img.shields.io/badge/Turborepo-Monorepo-EF4444?style=for-the-badge&logo=turborepo&logoColor=white)](https://turbo.build/repo)
+[[pnpm](https://img.shields.io/badge/pnpm-v9.1-F69220?style=for-the-badge&logo=pnpm&logoColor=white)](https://pnpm.io)
+[[Prisma](https://img.shields.io/badge/Prisma-PostgreSQL-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://prisma.io)
+[[Redis](https://img.shields.io/badge/Redis-ioredis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io)
 
 <br/>
 
@@ -18,7 +18,7 @@
 
 <br/>
 
-**[⚡ Architecture Overview](#-monorepo-architecture) &nbsp;•&nbsp; [🎮 Key Systems](#-core-systems) &nbsp;•&nbsp; [🛠️ Tech Stack](#-technology-stack) &nbsp;•&nbsp; [🚀 Quickstart](#-getting-started) &nbsp;•&nbsp; [📦 Package Ecosystem](#-workspace-packages)**
+**[Architecture Overview](#-monorepo-architecture) &nbsp;•&nbsp; [Key Systems](#-core-systems) &nbsp;•&nbsp; [Tech Stack](#-technology-stack) &nbsp;•&nbsp; [Quickstart](#-getting-started) &nbsp;•&nbsp; [Package Ecosystem](#-workspace-packages)**
 
 <br/>
 
@@ -26,7 +26,7 @@
 
 ---
 
-## ☕ What is Tensura?
+##  What is Tensura?
 
 Tensura is an enterprise-grade community platform tailored for large-scale Discord servers. Rather than a monolithic single-file bot script, Tensura is structured as a **Turborepo monorepo** with decoupled workspaces for database access, caching, graphics rendering, structured logging, and sharded gateway execution.
 
@@ -34,7 +34,7 @@ It blends robust backend distributed systems practices (concurrency management, 
 
 ---
 
-## 🎮 Core Systems
+##  Core Systems
 
 ### 1. Leveling & Atomic Redis Locks
 - Earn XP dynamically on chat interactions with configurable multipliers.
@@ -60,7 +60,7 @@ It blends robust backend distributed systems practices (concurrency management, 
 
 ---
 
-## ⚡ Monorepo Architecture
+##  Monorepo Architecture
 
 Tensura is managed via **Turborepo** and **pnpm workspaces**:
 
@@ -87,7 +87,7 @@ tensura/
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 | Layer | Technology | Purpose |
 |---|---|---|
@@ -102,7 +102,7 @@ tensura/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Node.js `>= 20.0.0`
@@ -160,7 +160,7 @@ pnpm build
 
 ---
 
-## 👤 Author
+##  Author
 
-**Jaideep Botla** ([@B-Jai12](https://github.com/B-Jai12))  
+**Jaideep Botla** ([B-Jai12](https://github.com/B-Jai12))  
 B.Tech AIML Student & Systems Builder • Architecting scalable distributed systems and interactive developer experiences.
